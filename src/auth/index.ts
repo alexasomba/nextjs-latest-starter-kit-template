@@ -1,20 +1,21 @@
-import { KVNamespace } from "@cloudflare/workers-types";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
-import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { withCloudflare } from "better-auth-cloudflare";
 import { anonymous, openAPI } from "better-auth/plugins";
 import { getDb } from "../db";
+// Cloudflare Worker runtime types (available via wrangler typegen)
 
 // Define an asynchronous function to build your auth configuration
 async function authBuilder() {
   const dbInstance = await getDb();
+  const { env, cf } = getCloudflareContext();
   return betterAuth(
     withCloudflare(
       {
         autoDetectIpAddress: true,
         geolocationTracking: true,
-        cf: getCloudflareContext().cf,
+        cf,
         d1: {
           db: dbInstance,
           options: {
@@ -22,11 +23,11 @@ async function authBuilder() {
             debugLogs: true, // Optional
           },
         },
-        // Make sure "KV" is the binding in your wrangler.toml
-        kv: process.env.KV as KVNamespace<string>,
+        // Cloudflare KV binding (declared in wrangler.jsonc and typegen'd into cloudflare-env.d.ts)
+        kv: env.KV,
         // R2 configuration for file storage (R2_BUCKET binding from wrangler.toml)
         r2: {
-          bucket: getCloudflareContext().env.R2_BUCKET,
+          bucket: env.R2_BUCKET,
           maxFileSize: 2 * 1024 * 1024, // 2MB
           allowedTypes: [".jpg", ".jpeg", ".png", ".gif"],
           additionalFields: {
@@ -36,21 +37,21 @@ async function authBuilder() {
           },
           hooks: {
             upload: {
-              before: async (file, ctx) => {
+              before: async (_file, ctx) => {
                 // Only allow authenticated users to upload files
                 if (ctx.session === null) {
                   return null; // Blocks upload
                 }
 
                 // Only allow paid users to upload files (for example)
-                const isPaidUser = (userId: string) => true; // example
+                const isPaidUser = (_userId: string) => true; // example
                 if (isPaidUser(ctx.session.user.id) === false) {
                   return null; // Blocks upload
                 }
 
                 // Allow upload
               },
-              after: async (file, ctx) => {
+              after: async (file, _ctx) => {
                 // Track your analytics (for example)
                 console.log("File uploaded:", file);
               },
@@ -73,7 +74,8 @@ async function authBuilder() {
       // Your core Better Auth configuration (see Better Auth docs for all options)
       {
         rateLimit: {
-          enabled: true,
+          // Enable rate limiting only when KV is available to avoid 500s in local dev
+          enabled: Boolean(env?.KV),
           // ... other rate limiting options
         },
         plugins: [openAPI(), anonymous()],
@@ -111,7 +113,7 @@ export const auth = betterAuth({
       cf: {},
       // R2 configuration for schema generation
       r2: {
-        bucket: {} as any, // Mock bucket for schema generation
+        bucket: null as unknown as R2Bucket, // Mock bucket for schema generation (types only)
         additionalFields: {
           category: { type: "string", required: false },
           isPublic: { type: "boolean", required: false },
@@ -129,7 +131,7 @@ export const auth = betterAuth({
   ),
 
   // Used by the Better Auth CLI for schema generation.
-  database: drizzleAdapter(process.env.DATABASE as any, {
+  database: drizzleAdapter(process.env.DATABASE as unknown as D1Database, {
     // Added 'as any' to handle potential undefined process.env.DATABASE
     provider: "sqlite",
     usePlural: false,

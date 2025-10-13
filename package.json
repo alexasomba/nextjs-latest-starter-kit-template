@@ -14,7 +14,7 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts",
     "auth:generate": "bunx --yes @better-auth/cli@latest generate --config src/auth/index.ts --output src/db/auth.schema.ts -y",
-    "auth:format": "bunx --yes prettier --write src/db/auth.schema.ts",
+    "auth:format": "bunx --yes biome format --write src/db/auth.schema.ts",
     "auth:update": "bun run auth:generate && bun run auth:format",
     "db:generate": "drizzle-kit generate",
     "db:migrate:dev": "wrangler d1 migrations apply DATABASE --local",
