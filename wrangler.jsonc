@@ -15,26 +15,28 @@
   "observability": {
     "enabled": true
   },
+  "placement": { "mode": "smart" },
   // Cloudflare D1 database binding (update with your actual database_id)
   "d1_databases": [
     {
       "binding": "DATABASE",
-      "database_name": "DATABASE",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_name": "your-d1-database-name",
+      "database_id": "YOUR_D1_DATABASE_ID",
+      "migrations_dir": "drizzle"
     }
   ],
   // Cloudflare KV namespace binding (update with your actual id)
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "id": "YOUR_KV_NAMESPACE_ID"
     }
   ],
   // Cloudflare R2 bucket binding (ensure the bucket exists)
   "r2_buckets": [
     {
       "binding": "R2_BUCKET",
-      "bucket_name": "r2-bucket"
+      "bucket_name": "your-r2-bucket-name"
     }
   ]
   /**

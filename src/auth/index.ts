@@ -18,7 +18,7 @@ async function authBuilder() {
                 d1: {
                     db: dbInstance,
                     options: {
-                        usePlural: true, // Optional: Use plural table names (e.g., "users" instead of "user")
+                        usePlural: false, // Optional: Use plural table names (e.g., "users" instead of "user")
                         debugLogs: true, // Optional
                     },
                 },
@@ -129,7 +129,7 @@ export const auth = betterAuth({
     database: drizzleAdapter(process.env.DATABASE as any, {
         // Added 'as any' to handle potential undefined process.env.DATABASE
         provider: "sqlite",
-        usePlural: true,
+        usePlural: false,
         debugLogs: true,
     }),
 });
