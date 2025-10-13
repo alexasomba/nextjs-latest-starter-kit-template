@@ -2,7 +2,8 @@ import type { CloudflareSessionResponse } from "better-auth-cloudflare";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+// Next.js 16+: proxy file convention replaces middleware
+export default async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     // Routes that require authentication
@@ -63,7 +64,7 @@ export async function middleware(request: NextRequest) {
                 });
             }
         } catch (error) {
-            console.error("Middleware error:", error);
+            console.error("Proxy error:", error);
 
             // On error, only redirect protected routes to avoid redirect loops
             if (isProtectedRoute) {
@@ -77,6 +78,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
 }
 
+// Matchers remain the same as middleware
 export const config = {
     matcher: [
         "/dashboard/:path*", // Protects /dashboard and all its sub-routes
