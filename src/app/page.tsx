@@ -47,25 +47,26 @@ export default function Home() {
   }
 
   return (
-    <div className="relative py-16">
-      <div className="mx-auto max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div className="container mx-auto px-4 py-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
               Next.js + Cloudflare starter with better-auth
             </h1>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-lg leading-relaxed">
               Kickstart your app with auth, KV, D1, and R2 prewired. Built with
               shadcn-styled components and modern tooling.
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 onClick={handleAnonymousLogin}
                 disabled={isAuthActionInProgress}
+                size="lg"
               >
                 {isAuthActionInProgress ? "Logging In..." : "Try the Dashboard"}
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" size="lg">
                 <a
                   href="https://github.com/zpg6/better-auth-cloudflare"
                   target="_blank"
@@ -83,22 +84,24 @@ export default function Home() {
                 Preconfigured to help you move fast.
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> better-auth
-                integrated (Cloudflare)
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> KV, D1, R2
-                wiring via Wrangler
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" />{" "}
-                shadcn-styled UI primitives
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> OpenNext
-                Cloudflare adapter
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <div className="size-2 rounded-full bg-primary" />
+                  <span>better-auth integrated (Cloudflare)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="size-2 rounded-full bg-primary" />
+                  <span>KV, D1, R2 wiring via Wrangler</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="size-2 rounded-full bg-primary" />
+                  <span>shadcn-styled UI primitives</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="size-2 rounded-full bg-primary" />
+                  <span>OpenNext Cloudflare adapter</span>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="justify-end">

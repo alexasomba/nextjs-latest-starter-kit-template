@@ -3,7 +3,6 @@
 import { Github } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 export function SiteHeader() {
   return (
@@ -28,7 +27,6 @@ export function SiteHeader() {
           </Button>
         </nav>
       </div>
-      <Separator />
     </header>
   );
 }
