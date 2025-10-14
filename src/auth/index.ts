@@ -19,7 +19,11 @@ async function authBuilder() {
           if (prop === "put") {
             return (key: string, value: string, options?: KvPutOptions) => {
               // Cloudflare KV requires expirationTtl >= 60 seconds when provided
-              if (options && typeof options === "object" && "expirationTtl" in options) {
+              if (
+                options &&
+                typeof options === "object" &&
+                "expirationTtl" in options
+              ) {
                 const ttl = Number(options.expirationTtl);
                 if (!Number.isNaN(ttl) && ttl > 0 && ttl < 60) {
                   options = { ...options, expirationTtl: 60 };

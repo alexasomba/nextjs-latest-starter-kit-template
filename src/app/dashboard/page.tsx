@@ -64,10 +64,16 @@ export default async function DashboardPage() {
         <div className="w-full max-w-4xl mx-auto">
           <div className="mb-6">
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-sm text-muted-foreground mt-1">Powered by better-auth-cloudflare</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Powered by better-auth-cloudflare
+            </p>
             <div className="mt-3 flex items-center gap-2">
-              <Badge variant="info" className="uppercase">Session</Badge>
-              {session.user?.id && <Badge variant="secondary">User ID: {session.user.id}</Badge>}
+              <Badge variant="info" className="uppercase">
+                Session
+              </Badge>
+              {session.user?.id && (
+                <Badge variant="secondary">User ID: {session.user.id}</Badge>
+              )}
               {session.user?.email ? (
                 <Badge>Email</Badge>
               ) : (

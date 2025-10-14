@@ -59,11 +59,18 @@ export default function Home() {
               shadcn-styled components and modern tooling.
             </p>
             <div className="flex gap-3">
-              <Button onClick={handleAnonymousLogin} disabled={isAuthActionInProgress}>
+              <Button
+                onClick={handleAnonymousLogin}
+                disabled={isAuthActionInProgress}
+              >
                 {isAuthActionInProgress ? "Logging In..." : "Try the Dashboard"}
               </Button>
               <Button asChild variant="outline">
-                <a href="https://github.com/zpg6/better-auth-cloudflare" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com/zpg6/better-auth-cloudflare"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Github className="mr-2" size={16} /> GitHub
                 </a>
               </Button>
@@ -72,25 +79,35 @@ export default function Home() {
           <Card className="w-full">
             <CardHeader>
               <CardTitle>What’s inside</CardTitle>
-              <CardDescription>Preconfigured to help you move fast.</CardDescription>
+              <CardDescription>
+                Preconfigured to help you move fast.
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm">
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> better-auth integrated (Cloudflare)
+                <span className="size-2 rounded-full bg-primary" /> better-auth
+                integrated (Cloudflare)
               </div>
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> KV, D1, R2 wiring via Wrangler
+                <span className="size-2 rounded-full bg-primary" /> KV, D1, R2
+                wiring via Wrangler
               </div>
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> shadcn-styled UI primitives
+                <span className="size-2 rounded-full bg-primary" />{" "}
+                shadcn-styled UI primitives
               </div>
               <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> OpenNext Cloudflare adapter
+                <span className="size-2 rounded-full bg-primary" /> OpenNext
+                Cloudflare adapter
               </div>
             </CardContent>
             <CardFooter className="justify-end">
               <Button asChild variant="ghost" size="sm">
-                <a href="https://www.npmjs.com/package/better-auth-cloudflare" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.npmjs.com/package/better-auth-cloudflare"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Package className="mr-2" size={16} /> npm
                 </a>
               </Button>

@@ -19,7 +19,8 @@ export default function FileUploadDemo() {
     error?: string;
     data?: unknown;
   };
-  const [fileOperationResult, setFileOperationResult] = useState<UploadResult | null>(null);
+  const [fileOperationResult, setFileOperationResult] =
+    useState<UploadResult | null>(null);
   type UserFile = {
     id: string;
     originalName: string;
@@ -162,8 +163,8 @@ export default function FileUploadDemo() {
     if (bytes === 0) return "0 B";
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / (k ** i)).toFixed(1))} ${sizes[i]}`;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
   };
 
   // Helper function for relative time formatting
