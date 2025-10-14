@@ -1,10 +1,23 @@
+
 # Next.js Latest Starter Kit Template
 
-A production-ready Next.js 15 starter template optimized for **Cloudflare Pages** deployment with **better-auth-cloudflare** integration.
+<p align="left">
+  <a href="https://pages.cloudflare.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Deploy%20to-Cloudflare_Pages-ffbe00?logo=cloudflare&logoColor=white" alt="Deploy to Cloudflare Pages" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT" target="_blank">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License" />
+  </a>
+  <a href="https://github.com/alexasomba/nextjs-latest-starter-kit-template/actions" target="_blank">
+    <img src="https://github.com/alexasomba/nextjs-latest-starter-kit-template/actions/workflows/main.yml/badge.svg" alt="CI Status" />
+  </a>
+</p>
+
+A production-ready Next.js 16 starter template optimized for **Cloudflare Pages** deployment with **better-auth-cloudflare** integration.
 
 ## Features
 
-- ⚡ **Next.js 15.4.6** with React 19 and Turbopack
+- ⚡ **Next.js 16** with React 19 and Turbopack
 - 🔐 **Authentication** via [better-auth-cloudflare](https://github.com/zpg6/better-auth-cloudflare)
   - Anonymous login support
   - Geolocation tracking
@@ -18,7 +31,7 @@ A production-ready Next.js 15 starter template optimized for **Cloudflare Pages*
 
 ## Technology Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Runtime**: React 19
 - **Styling**: Tailwind CSS 4, shadcn/ui
 - **Authentication**: better-auth + better-auth-cloudflare
