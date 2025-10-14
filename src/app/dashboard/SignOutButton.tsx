@@ -1,9 +1,9 @@
 "use client";
 
-import authClient from "@/auth/authClient"; // Assuming default export from your authClient setup
-import { Button } from "@/components/ui/button"; // Import the shadcn/ui Button
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react"; // Added useState and useTransition
+import authClient from "@/auth/authClient"; // Assuming default export from your authClient setup
+import { Button } from "@/components/ui/button"; // Import the shadcn/ui Button
 
 export default function SignOutButton() {
   const router = useRouter();
@@ -48,10 +48,11 @@ export default function SignOutButton() {
           },
         },
       });
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Catch any unexpected errors during the signOut call itself
       console.error("Unexpected sign out error:", e);
-      setError(e.message || "An unexpected error occurred. Please try again.");
+      const message = e instanceof Error ? e.message : String(e);
+      setError(message || "An unexpected error occurred. Please try again.");
       // router.replace("/"); // Fallback redirect
     } finally {
       setIsLoading(false);

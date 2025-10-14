@@ -1,8 +1,8 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { withCloudflare } from "better-auth-cloudflare";
 import { anonymous, openAPI } from "better-auth/plugins";
+import { withCloudflare } from "better-auth-cloudflare";
 import { getDb } from "../db";
 // Cloudflare Worker runtime types (available via wrangler typegen)
 
@@ -10,6 +10,28 @@ import { getDb } from "../db";
 async function authBuilder() {
   const dbInstance = await getDb();
   const { env, cf } = getCloudflareContext();
+  // Enable KV in all environments when available; we wrap put() to honor KV's minimum TTL (>= 60s)
+  const enableKv = Boolean(env?.KV);
+  type KvPutOptions = { expirationTtl?: number } & Record<string, unknown>;
+  const kvWithMinTtl = enableKv
+    ? (new Proxy(env.KV, {
+        get(target, prop, receiver) {
+          if (prop === "put") {
+            return (key: string, value: string, options?: KvPutOptions) => {
+              // Cloudflare KV requires expirationTtl >= 60 seconds when provided
+              if (options && typeof options === "object" && "expirationTtl" in options) {
+                const ttl = Number(options.expirationTtl);
+                if (!Number.isNaN(ttl) && ttl > 0 && ttl < 60) {
+                  options = { ...options, expirationTtl: 60 };
+                }
+              }
+              return target.put(key, value, options);
+            };
+          }
+          return Reflect.get(target, prop, receiver);
+        },
+      }) as unknown as KVNamespace<string>)
+    : undefined;
   return betterAuth(
     withCloudflare(
       {
@@ -24,7 +46,8 @@ async function authBuilder() {
           },
         },
         // Cloudflare KV binding (declared in wrangler.jsonc and typegen'd into cloudflare-env.d.ts)
-        kv: env.KV,
+        // Provide a wrapper that clamps expirationTtl to >= 60s so local/dev doesn't error
+        kv: kvWithMinTtl,
         // R2 configuration for file storage (R2_BUCKET binding from wrangler.toml)
         r2: {
           bucket: env.R2_BUCKET,
@@ -74,8 +97,8 @@ async function authBuilder() {
       // Your core Better Auth configuration (see Better Auth docs for all options)
       {
         rateLimit: {
-          // Enable rate limiting only when KV is available to avoid 500s in local dev
-          enabled: Boolean(env?.KV),
+          // Enable rate limiting whenever KV is available (dev and prod)
+          enabled: enableKv,
           // ... other rate limiting options
         },
         plugins: [openAPI(), anonymous()],

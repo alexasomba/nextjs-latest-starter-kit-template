@@ -1,12 +1,12 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
+import { CheckCircle, FolderOpen, Upload } from "lucide-react";
 import authClient from "@/auth/authClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, FolderOpen, Upload } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function FileUploadDemo() {
   const [file, setFile] = useState<File | null>(null);
@@ -14,12 +14,22 @@ export default function FileUploadDemo() {
   const [isPublic, setIsPublic] = useState(false);
   const [description, setDescription] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const [fileOperationResult, setFileOperationResult] = useState<{
+  type UploadResult = {
     success?: boolean;
     error?: string;
-    data?: any;
-  } | null>(null);
-  const [userFiles, setUserFiles] = useState<any[]>([]);
+    data?: unknown;
+  };
+  const [fileOperationResult, setFileOperationResult] = useState<UploadResult | null>(null);
+  type UserFile = {
+    id: string;
+    originalName: string;
+    size: number;
+    uploadedAt: string | Date;
+    isPublic?: boolean;
+    category?: string | null;
+    description?: string | null;
+  };
+  const [userFiles, setUserFiles] = useState<UserFile[]>([]);
   const [isLoadingFiles, setIsLoadingFiles] = useState(false);
 
   const handleUpload = async () => {
@@ -64,7 +74,7 @@ export default function FileUploadDemo() {
     }
   };
 
-  const loadUserFiles = async () => {
+  const loadUserFiles = useCallback(async () => {
     setIsLoadingFiles(true);
     try {
       // Use the inferred list endpoint with pagination support
@@ -82,7 +92,7 @@ export default function FileUploadDemo() {
     } finally {
       setIsLoadingFiles(false);
     }
-  };
+  }, []);
 
   const downloadFile = async (fileId: string, filename: string) => {
     try {
@@ -152,8 +162,8 @@ export default function FileUploadDemo() {
     if (bytes === 0) return "0 B";
     const k = 1024;
     const sizes = ["B", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / (k ** i)).toFixed(1))} ${sizes[i]}`;
   };
 
   // Helper function for relative time formatting
@@ -176,8 +186,8 @@ export default function FileUploadDemo() {
 
   // Auto-load files when component mounts
   useEffect(() => {
-    loadUserFiles();
-  }, []);
+    void loadUserFiles();
+  }, [loadUserFiles]);
 
   return (
     <div className="space-y-6">
@@ -238,6 +248,7 @@ export default function FileUploadDemo() {
               id="isPublic"
               type="checkbox"
               checked={isPublic}
+              aria-label="Make file public"
               onChange={(e) => setIsPublic(e.target.checked)}
             />
             <Label htmlFor="isPublic">Make file public</Label>

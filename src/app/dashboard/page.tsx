@@ -1,28 +1,24 @@
-import { initAuth } from "@/auth";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+  Building,
+  Clock,
+  FileText,
+  Github,
+  Globe,
+  MapPin,
+  Navigation,
+  Package,
+  Server,
+} from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import SignOutButton from "./SignOutButton"; // Import the client component
+import { initAuth } from "@/auth";
 import FileUploadDemo from "@/components/FileUploadDemo";
-import {
-  Github,
-  Package,
-  FileText,
-  MapPin,
-  Clock,
-  Globe,
-  Building,
-  Server,
-  Navigation,
-} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import SignOutButton from "./SignOutButton"; // Import the client component
 
 export default async function DashboardPage() {
   const authInstance = await initAuth();
@@ -35,24 +31,51 @@ export default async function DashboardPage() {
     redirect("/"); // Redirect to home if no session
   }
 
-  // Get geolocation data from our plugin's endpoint
-  const cloudflareGeolocationData = await authInstance.api.getGeolocation({
-    headers: await headers(),
-  });
+  // Optional: Plugin endpoints like geolocation/openapi
+  // Provide minimal local typings so we don't rely on generated plugin types here
+  type GeolocationOK = {
+    timezone?: string | null;
+    city?: string | null;
+    country?: string | null;
+    region?: string | null;
+    regionCode?: string | null;
+    colo?: string | null;
+    latitude?: string | null;
+    longitude?: string | null;
+  };
+  type GeolocationResp = { error: string } | GeolocationOK;
+  type CloudflareApiExt = {
+    getGeolocation?: (arg: { headers: Headers }) => Promise<GeolocationResp>;
+    generateOpenAPISchema?: () => Promise<{ openapi: string }>;
+  };
+  const api = authInstance.api as unknown as CloudflareApiExt;
+  const cloudflareGeolocationData: GeolocationResp | null = api.getGeolocation
+    ? await api.getGeolocation({ headers: await headers() })
+    : null;
+  const openAPISpec: { openapi: string } | null = api.generateOpenAPISchema
+    ? await api.generateOpenAPISchema()
+    : null;
 
-  // Access another plugin's endpoint to demonstrate plugin type inference is still intact
-  const openAPISpec = await authInstance.api.generateOpenAPISchema();
+  // Narrowing helpers not needed in rendering logic; avoid unused lint warnings
 
   return (
-    <div className="flex flex-col min-h-screen font-[family-name:var(--font-geist-sans)]">
-      <main className="flex-1 flex flex-col items-center justify-center p-8">
-        <div className="w-full max-w-3xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-sm text-gray-500 mt-2">
-              Powered by better-auth-cloudflare
-            </p>
+    <div className="flex flex-col min-h-[70vh]">
+      <main className="flex-1 p-6">
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">Powered by better-auth-cloudflare</p>
+            <div className="mt-3 flex items-center gap-2">
+              <Badge variant="info" className="uppercase">Session</Badge>
+              {session.user?.id && <Badge variant="secondary">User ID: {session.user.id}</Badge>}
+              {session.user?.email ? (
+                <Badge>Email</Badge>
+              ) : (
+                <Badge variant="outline">Anonymous</Badge>
+              )}
+            </div>
           </div>
+          <Separator className="my-4" />
 
           <Tabs defaultValue="user" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -236,7 +259,7 @@ export default async function DashboardPage() {
             <Link
               href="/api/auth/reference#tag/cloudflare/get/cloudflare/geolocation"
               className="flex items-center gap-1 hover:text-gray-700 transition-colors"
-              title={`OpenAPI v${openAPISpec.openapi} Schema`}
+              title={`OpenAPI v${openAPISpec?.openapi ?? "3.x"} Schema`}
             >
               <FileText size={16} />
               <span>OpenAPI</span>
