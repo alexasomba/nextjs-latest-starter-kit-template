@@ -2,7 +2,7 @@
 
 import { Github, Package } from "lucide-react";
 import { useState } from "react";
-import authClient from "@/auth/authClient";
+import authClient from "@/lib/auth/authClient";
 import { Button } from "@/components/ui/button";
 import {
   Card,

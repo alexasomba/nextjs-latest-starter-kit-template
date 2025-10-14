@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { initAuth } from "@/auth";
+import { initAuth } from "@/lib/auth";
 import FileUploadDemo from "@/components/FileUploadDemo";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

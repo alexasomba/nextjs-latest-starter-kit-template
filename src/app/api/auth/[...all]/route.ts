@@ -1,4 +1,4 @@
-import { initAuth } from "@/auth";
+import { initAuth } from "@/lib/auth";
 
 export async function POST(req: Request) {
   const auth = await initAuth();

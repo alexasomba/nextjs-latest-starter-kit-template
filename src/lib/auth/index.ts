@@ -1,9 +1,18 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { anonymous, openAPI } from "better-auth/plugins";
+import { 
+  anonymous, 
+  openAPI, 
+  twoFactor, 
+  emailOTP, 
+  magicLink, 
+  organization, 
+  admin, 
+  apiKey 
+} from "better-auth/plugins";
 import { withCloudflare } from "better-auth-cloudflare";
-import { getDb } from "../db";
+import { getDb } from "../../db";
 
 // Cloudflare Worker runtime types (available via wrangler typegen)
 
@@ -101,12 +110,125 @@ async function authBuilder() {
       },
       // Your core Better Auth configuration (see Better Auth docs for all options)
       {
+        appName: "NextJS Starter Kit",
         rateLimit: {
-          // Enable rate limiting whenever KV is available (dev and prod)
           enabled: enableKv,
           // ... other rate limiting options
         },
-        plugins: [openAPI(), anonymous()],
+        user: {
+          changeEmail: {
+            enabled: true,
+            sendChangeEmailVerification: async (
+              { newEmail, url }: { newEmail: string; url: string },
+              _request?: unknown,
+            ) => {
+              try {
+                // TODO: Implement email sending service
+                console.log(`Email change verification sent to ${newEmail}: ${url}`);
+              } catch (err) {
+                console.error("Failed to send change email verification:", err);
+              }
+            },
+          },
+        },
+        trustedOrigins: [
+          `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}`,
+          "http://localhost:3000",
+          "http://localhost:8787",
+        ],
+        secret: process.env.BETTER_AUTH_SECRET || "default-secret-change-me",
+        // Advanced cookie handling; adjust for local dev to avoid domain / secure mismatches
+        session: {
+          // 7 days total life; refresh at most twice daily to reduce write churn
+          expiresIn: 60 * 60 * 24 * 7,
+          updateAge: 60 * 60 * 12,
+        },
+        account: {
+          encryptOAuthTokens: true, // Encrypt OAuth tokens before storing them in the database
+          accountLinking: {
+            enabled: true,
+            trustedProviders: ["google", "facebook", "email-password"],
+          },
+        },
+        socialProviders: {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+          },
+        },
+        emailAndPassword: {
+          enabled: true,
+          requireEmailVerification: true, // Require email verification for new accounts
+          sendResetPassword: async ({ user, url, token }) => {
+            try {
+              // TODO: Implement email sending service
+              console.log(`Password reset email sent to ${user.email}: ${url} (token: ${token})`);
+            } catch (error) {
+              console.error("Failed to send password reset email:", error);
+            }
+          },
+        },
+        emailVerification: {
+          sendVerificationEmail: async ({ user, url }) => {
+            try {
+              // TODO: Implement email sending service
+              console.log(`Verification email sent to ${user.email}: ${url}`);
+            } catch (error) {
+              console.error("Failed to send verification email:", error);
+            }
+          },
+        },
+        plugins: [
+          openAPI(),
+          anonymous(),
+          twoFactor({
+            issuer: "NextJS Starter Kit",
+            otpOptions: {
+              async sendOTP({ user, otp }, _request) {
+                try {
+                  // TODO: Implement OTP sending service (email/SMS)
+                  console.log(`2FA OTP sent to ${user.email}: ${otp}`);
+                } catch (e) {
+                  console.error("twoFactor.sendOTP handler error:", e);
+                }
+              },
+            },
+          }),
+          magicLink({
+            sendMagicLink: async ({ email, url }) => {
+              try {
+                // TODO: Implement email sending service
+                console.log(`Magic link sent to ${email}: ${url}`);
+              } catch (error) {
+                console.error("Failed to send magic link email:", error);
+              }
+            },
+          }),
+          emailOTP({
+            async sendVerificationOTP({ email, otp, type }) {
+              try {
+                // TODO: Implement email sending service
+                console.log(`Email OTP sent to ${email} for ${type}: ${otp}`);
+              } catch (error) {
+                console.error(`Failed to send OTP to ${email}:`, error);
+              }
+            },
+          }),
+          admin({
+            adminRoles: ["system_admin", "admin"],
+          }),
+          apiKey(),
+          organization({
+            sendInvitationEmail: async (data: unknown) => {
+              try {
+                // TODO: Implement email sending service
+                console.log("Organization invitation email sent:", data);
+              } catch (err) {
+                console.error("sendInvitationEmail failed:", err);
+              }
+            },
+          }),
+        ],
         // ... other Better Auth options
       },
     ),
@@ -153,8 +275,26 @@ export const auth = betterAuth({
     {
       // Include only configurations that influence the Drizzle schema,
       // e.g., if certain features add tables or columns.
-      // socialProviders: { /* ... */ } // If they add specific tables/columns
-      plugins: [openAPI(), anonymous()],
+      plugins: [
+        openAPI(), 
+        anonymous(), 
+        twoFactor({
+          issuer: "NextJS Starter Kit",
+        }), 
+        emailOTP({
+          async sendVerificationOTP() {
+            // Schema generation only
+          },
+        }), 
+        magicLink({
+          sendMagicLink: async () => {
+            // Schema generation only
+          },
+        }), 
+        organization(), 
+        admin(), 
+        apiKey()
+      ],
     },
   ),
 
