@@ -4,6 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { anonymous, openAPI } from "better-auth/plugins";
 import { withCloudflare } from "better-auth-cloudflare";
 import { getDb } from "../db";
+
 // Cloudflare Worker runtime types (available via wrangler typegen)
 
 // Define an asynchronous function to build your auth configuration

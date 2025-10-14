@@ -14,10 +14,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { initAuth } from "@/auth";
 import FileUploadDemo from "@/components/FileUploadDemo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SignOutButton from "./SignOutButton"; // Import the client component
 
 export default async function DashboardPage() {
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
               Powered by better-auth-cloudflare
             </p>
             <div className="mt-3 flex items-center gap-2">
-              <Badge variant="info" className="uppercase">
+              <Badge variant="secondary" className="uppercase">
                 Session
               </Badge>
               {session.user?.id && (
