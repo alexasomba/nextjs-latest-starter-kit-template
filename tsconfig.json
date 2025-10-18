@@ -19,7 +19,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@app/*": ["./app/*"],
+			"@components/*": ["./components/*"],
+			"@hooks/*": ["./hooks/*"],
+			"@lib/*": ["./lib/*"],
+			"@types/*": ["./types/*"],
+			"@utils/*": ["./utils/*"]
     },
     "types": ["./cloudflare-env.d.ts", "node"]
   },
