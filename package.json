@@ -11,7 +11,8 @@
     "format": "biome format --write",
     "lint": "bunx --bun biome lint --write ./src",
     "check": "bunx --bun biome check --write",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --project tsconfig.lint.json --noEmit",
+    "type-check:staged": "tsc --project tsconfig.lint.json --noEmit",
     "prepare": "husky",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
@@ -64,8 +65,8 @@
     "wrangler": "^4.43.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "bun type-check"
+    "src/**/*.{ts,tsx}": [
+      "./scripts/type-check.sh"
     ]
   }
 }

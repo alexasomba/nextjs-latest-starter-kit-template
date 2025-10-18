@@ -6,9 +6,9 @@ export async function getDb() {
   // Retrieves Cloudflare-specific context, including environment variables and bindings
   const { env } = await getCloudflareContext({ async: true });
 
-  // Initialize Drizzle with your D1 binding (e.g., "DB" or "DATABASE" from wrangler.toml)
+  // Initialize Drizzle with your D1 binding (e.g., "DB" or "DATABASE" from wrangler.jsonc)
   return drizzle(env.DATABASE, {
-    // Ensure "DATABASE" matches your D1 binding name in wrangler.toml
+    // Ensure "DATABASE" matches your D1 binding name in wrangler.jsonc
     schema,
     logger: true, // Optional
   });
