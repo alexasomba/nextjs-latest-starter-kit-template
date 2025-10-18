@@ -1,15 +1,15 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { 
-  anonymous, 
-  openAPI, 
-  twoFactor, 
-  emailOTP, 
-  magicLink, 
-  organization, 
-  admin, 
-  apiKey 
+import {
+  admin,
+  anonymous,
+  apiKey,
+  emailOTP,
+  magicLink,
+  openAPI,
+  organization,
+  twoFactor,
 } from "better-auth/plugins";
 import { withCloudflare } from "better-auth-cloudflare";
 import { getDb } from "../../db";
@@ -124,7 +124,9 @@ async function authBuilder() {
             ) => {
               try {
                 // TODO: Implement email sending service
-                console.log(`Email change verification sent to ${newEmail}: ${url}`);
+                console.log(
+                  `Email change verification sent to ${newEmail}: ${url}`,
+                );
               } catch (err) {
                 console.error("Failed to send change email verification:", err);
               }
@@ -162,7 +164,9 @@ async function authBuilder() {
           sendResetPassword: async ({ user, url, token }) => {
             try {
               // TODO: Implement email sending service
-              console.log(`Password reset email sent to ${user.email}: ${url} (token: ${token})`);
+              console.log(
+                `Password reset email sent to ${user.email}: ${url} (token: ${token})`,
+              );
             } catch (error) {
               console.error("Failed to send password reset email:", error);
             }
@@ -276,24 +280,24 @@ export const auth = betterAuth({
       // Include only configurations that influence the Drizzle schema,
       // e.g., if certain features add tables or columns.
       plugins: [
-        openAPI(), 
-        anonymous(), 
+        openAPI(),
+        anonymous(),
         twoFactor({
           issuer: "NextJS Starter Kit",
-        }), 
+        }),
         emailOTP({
           async sendVerificationOTP() {
             // Schema generation only
           },
-        }), 
+        }),
         magicLink({
           sendMagicLink: async () => {
             // Schema generation only
           },
-        }), 
-        organization(), 
-        admin(), 
-        apiKey()
+        }),
+        organization(),
+        admin(),
+        apiKey(),
       ],
     },
   ),

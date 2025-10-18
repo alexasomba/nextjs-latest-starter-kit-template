@@ -2,7 +2,6 @@
 
 import { Github, Package } from "lucide-react";
 import { useState } from "react";
-import authClient from "@/lib/auth/authClient";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import authClient from "@/lib/auth/authClient";
 
 export default function Home() {
   const { error: sessionError } = authClient.useSession();

@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react"; // Added useState and useTransition
-import authClient from "@/lib/auth/authClient"; // Assuming default export from your authClient setup
 import { Button } from "@/components/ui/button"; // Import the shadcn/ui Button
+import authClient from "@/lib/auth/authClient"; // Assuming default export from your authClient setup
 
 export default function SignOutButton() {
   const router = useRouter();

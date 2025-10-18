@@ -8,12 +8,12 @@ import {
 } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { initAuth } from "@/lib/auth";
 import FileUploadDemo from "@/components/FileUploadDemo";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { initAuth } from "@/lib/auth";
 import SignOutButton from "./SignOutButton"; // Import the client component
 
 export default async function DashboardPage() {
